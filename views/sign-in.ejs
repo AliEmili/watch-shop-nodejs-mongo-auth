@@ -1,0 +1,52 @@
+<%- include('header', {title: "Sign In"}); -%>
+    <form>
+        <div class="signup-container">
+            <h2>ورود</h2>
+            <label class="center-label" for="username">نام کاربری :</label>
+            <input id="username" class="signup-input" type="text" placeholder="نام کاربری" required name="username" />
+            <label class="center-label" for="password">رمز عبور :</label>
+            <input id="password" class="signup-input" type="password" placeholder="رمز عبور" required name="password" />
+            <p id="error" class="error"></p>
+            <button id="sign-in" class="submit" type="submit">ارسال</button>
+        </div>
+    </form>
+    <script>
+        document.getElementById('sign-in').addEventListener('click', (e) => {
+            e.preventDefault();
+            const error = document.getElementById('error')
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            fetch('/login', {
+                    method: 'post',
+                    body: JSON.stringify({
+                        username,
+                        password
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json())
+                .then((data) => {
+                    let success = false;
+                    if (data.token) {
+                        success = true;
+                        localStorage.setItem('token', data.token);
+                        error.style.display = 'block';
+                        error.innerHTML = 'با موفقیت وارد شدید، به صفحه اصلی هدایت می شوید.';
+                        error.style.color = 'green';
+                    } else {
+                        error.style.display = 'block';
+                        error.innerHTML = 'ورود ناموفق، دوباره تلاش کنید.';
+                        error.style.color = 'tomato';
+                    }
+                    setTimeout(() => {
+                        error.style.display = 'none';
+                        if (success) {
+                            window.location.href = '/';
+                        }
+                    }, 5000);
+                })
+                .catch((err) => console.log(err));
+        })
+    </script>
+    <%- include('footer'); -%>

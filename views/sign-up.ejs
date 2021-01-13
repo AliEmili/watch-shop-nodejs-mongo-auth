@@ -1,0 +1,51 @@
+<%- include('header', {title: "Sign Up"}); -%>
+    <form>
+        <div class="signup-container">
+            <h2>ثبت نام</h2>
+            <label class="center-label" for="username">نام کاربری :</label>
+            <input id="username" class="signup-input" type="text" placeholder="نام کاربری" required name="username" />
+            <label class="center-label" for="password">رمز عبور :</label>
+            <input id="password" class="signup-input" type="password" placeholder="رمز عبور" required name="password" />
+            <p id="error" class="error"></p>
+            <button id="sign-up" class="submit" type="submit">ارسال</button>
+        </div>
+    </form>
+    <script>
+        document.getElementById('sign-up').addEventListener('click', (e) => {
+            e.preventDefault();
+            const error = document.getElementById('error')
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            fetch('/sign-up', {
+                    method: 'post',
+                    body: JSON.stringify({
+                        username,
+                        password
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json())
+                .then((data) => {
+                    let success = false;
+                    if (data.Message === 'Users exists!') {
+                        error.style.display = 'block';
+                        error.innerHTML = 'نام کاربری تکراری';
+                        error.style.color = 'tomato';
+                    } else if (data.Message === 'Signup completed.') {
+                        success = true;
+                        error.style.display = 'block';
+                        error.innerHTML = 'ثبت نام انجام شد، به صفحه ورود هدایت می شوید.';
+                        error.style.color = 'green';
+                    }
+                    setTimeout(() => {
+                        error.style.display = 'none';
+                        if(success){
+                            window.location.href = '/sign-in';
+                        }
+                    }, 5000);
+                })
+                .catch((err) => console.log(err));
+        })
+    </script>
+    <%- include('footer'); -%>

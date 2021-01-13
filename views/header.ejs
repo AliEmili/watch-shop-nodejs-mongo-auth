@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%-title-%>
+    </title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body dir="rtl">
+
+    <nav>
+        <h2><a href="/">ساعت <span>خفن</span></a></h2>
+        <ul id="menu">
+            <a href="/">
+                <li>خانه</li>
+            </a>
+            <a href="/store">
+                <li>فروشگاه</li>
+            </a>
+            <a href="/about-us">
+                <li>درباره ما</li>
+            </a>
+            <a href="/newest">
+                <li>جدیدترین ها</li>
+            </a>
+            <a href="/blog">
+                <li>وبلاگ</li>
+            </a>
+            <a href="/pages">
+                <li>صفحات</li>
+            </a>
+            <a href="/contact-us">
+                <li>ارتباط با ما</li>
+            </a>
+        </ul>
+        <div class="nav_icons">
+            <i class="fas fa-search"></i>
+            <i class="fas fa-user"></i>
+            <i class="fas fa-shopping-cart"></i>
+        </div>
+    </nav>
+    <script>
+        if (localStorage.getItem('token')) {
+            let a = document.createElement('a');
+            let li = document.createElement('li');
+            let liText = document.createTextNode('خروج');
+            li.appendChild(liText);
+            a.appendChild(li);
+            document.getElementById('menu').appendChild(a);
+            a.style.color = 'red';
+            a.addEventListener('click', () => {
+                localStorage.removeItem('token');
+                alert('خروج موفقیت آمیز بود.');
+                window.location.reload();
+            })
+        } else {
+            let a = document.createElement('a');
+            let li = document.createElement('li');
+            let liText = document.createTextNode('ورود');
+            li.appendChild(liText);
+            a.setAttribute('href', '/sign-in');
+            a.appendChild(li);
+            document.getElementById('menu').appendChild(a);
+            a.style.color = 'red';
+        }
+    </script>

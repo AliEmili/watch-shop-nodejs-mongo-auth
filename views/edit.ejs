@@ -1,0 +1,31 @@
+<%- include('header', {title: "Edit"}); -%>
+    <div class="container">
+        <form class="add-photo" id="form">
+            <h2>ویرایش کالا با عنوان :
+                <%= data.title %>
+            </h2>
+            <label for="title">عنوان تصویر :</label>
+            <input type="text" id="title" name="title" placeholder="<%=data.title %>">
+            <label for="price">قیمت کالا :</label>
+            <input type="text" name="price" placeholder="<%=data.price%>">
+            <label for="picture">تصویر کالا :</label>
+            <input class="product-photo" type="file" name="picture" id="picture" accept="image/png,image/jpeg,image/jpg">
+            <button class="submit" type="submit">ارسال</button>
+        </form>
+    </div>
+    <script>
+        const token = localStorage.getItem('token');
+        document.getElementById('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            let formData = new FormData(document.getElementById('form'));
+            formData.append('token', token);
+            fetch(`/api/edit/<%=data.id%>`, {
+                    body: formData,
+                    method: 'post'
+                })
+                .then(res => res.json())
+                .then(data => window.location.href = '/store')
+                .catch(err => alert(err));
+        })
+    </script>
+    <%- include('footer'); -%>

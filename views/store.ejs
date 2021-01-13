@@ -1,0 +1,71 @@
+<%- include('header', {title: "Store"}); -%>
+    <div class="container">
+        <div class="text">
+            <h2>محصولات</h2>
+        </div>
+        <div class="popular-imgs">
+            <%productData.map((product)=>{%>
+                <div class="each-image">
+                    <img src=<%=product.link%> alt="pic">
+                    <p>
+                        <%=product.title%>
+                    </p>
+                    <p class="price">
+                        <%=product.price%>
+                    </p>
+                    <div class="btns">
+                        <button onclick="handleDelete(<%=product.id%>)" class="delete">حذف</button>
+                        <button onclick="handleEdit(<%=product.id%>)" class="edit">ویرایش</button>
+                    </div>
+                </div>
+                <%});%>
+        </div>
+        <form class="add-photo" id="form" enctype="multipart/form-data">
+            <h2>افزودن کالا</h2>
+            <label for="title">عنوان تصویر :</label>
+            <input required type="text" id="title" name="title" placeholder="عنوان تصویر">
+            <label for="price">قیمت کالا :</label>
+            <input required type="text" name="price" placeholder="قیمت کالا">
+            <label for="picture">تصویر کالا :</label>
+            <input required class="product-photo" type="file" name="picture" id="picture" accept="image/png,image/jpeg,image/jpg">
+            <button class="submit" type="submit">ارسال</button>
+        </form>
+    </div>
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) {
+            const btns = document.getElementsByClassName('btns')
+            for (btn of btns) {
+                btn.style.display = 'none';
+            }
+            document.getElementById('form').style.display = 'none';
+        }
+        document.getElementById('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            let formData = new FormData(document.getElementById('form'));
+            formData.append('token', token);
+            fetch('/store', {
+                    body: formData,
+                    method: 'post'
+                })
+                .then(res => res.json())
+                .then(data => window.location.reload())
+                .catch(err => alert(err));
+        })
+        const handleDelete = (id) => {
+            fetch(`/store/${id}`, {
+                    method: 'delete',
+                    headers: {
+                        'token': token
+                    }
+                })
+                .then(res => res.json())
+                .then(data => window.location.reload())
+                .catch(err => alert(err))
+        }
+        const handleEdit = (id) => {
+            window.location.href = `/edit/${id}`;
+        }
+    </script>
+
+    <%- include('footer'); -%>
